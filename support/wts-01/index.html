@@ -89,6 +89,10 @@
     .lang-switcher strong {
       color: #333;
     }
+    .lang-switcher {
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
   </style>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3N0JESN4WK"></script>
@@ -103,21 +107,24 @@
 <body>
 
 <header>
-  <div class="d-flex justify-content-between align-items-center container">
-    <a href="#" class="logo"><img src="paquber_v2.svg" height="40" alt="Paquber logo"></a>
-    <nav class="navbar navbar-expand-lg navbar-light p-0">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item"><a href="#hero" class="nav-link">Home</a></li>
-        <li class="nav-item"><a href="#video" class="nav-link">Assembly</a></li>
-        <li class="nav-item"><a href="#contact" class="nav-link">Support</a></li>
-      </ul>
-      <div class="lang-switcher ml-3">
-        <span class="text-muted">🌐</span>
-        <strong>English</strong> |
-        <a href="es/index.html">Español</a>
+  <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+      <!-- Logo -->
+      <a class="navbar-brand" href="#">
+        <img src="paquber_v2.svg" alt="Paquber Logo" height="36">
+      </a>
+      <!-- Left side: Menu links -->
+      <div class="d-flex flex-row gap-3 align-items-center">
+        <a class="nav-link px-2" href="#video">Assembly</a>
+        <a class="nav-link px-2" href="#contact">Support</a>
       </div>
-    </nav>
-  </div>
+      <!-- Right side: Language -->
+      <div class="lang-switcher d-flex align-items-center">
+        🌐 <strong class="mx-1">English</strong> | 
+        <a class="ml-1" href="es/index.html">Español</a>
+      </div>
+    </div>
+  </nav>
 </header>
 
 <section id="hero" class="hero">
@@ -199,6 +206,5 @@
     </div>
   </div>
 </footer>
-
 </body>
 </html>
