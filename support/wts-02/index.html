@@ -263,7 +263,7 @@
 <section id="video" class="container text-center my-5">
   <h2 class="section-title">📺 Assembly Video</h2>
   <div class="embed-responsive embed-responsive-16by9">
-    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/XoQgp6NDo8c?si=HiSCFIQv7iRX-1l5" allowfullscreen></iframe>
+    <iframe id="assemblyVideo" class="embed-responsive-item" src="https://www.youtube.com/embed/XoQgp6NDo8c?enablejsapi=1&si=HiSCFIQv7iRX-1l5" allowfullscreen></iframe>
   </div>
 </section>
 
@@ -327,6 +327,7 @@
     const nameInput = document.getElementById('nameInput');
     const ageInput = document.getElementById('ageInput');
     const photoInput = document.getElementById('photoInput');
+    const pageLabel = 'wts-02-en';
 
     const templateImage = new Image();
     const isFileProtocol = window.location.protocol === 'file:';
@@ -435,6 +436,15 @@
 
     photoUploadButton.addEventListener('click', () => photoInput.click());
 
+    function trackEvent(action) {
+      if (typeof gtag === 'function') {
+        gtag('event', action, {
+          event_category: 'Zoo Keeper',
+          event_label: pageLabel
+        });
+      }
+    }
+
     downloadBtn.addEventListener('click', () => {
       const safeName = (state.name || 'zoo-keeper-id')
         .toLowerCase()
@@ -471,6 +481,7 @@
         } else {
           triggerDownload(canvas.toDataURL('image/png'));
         }
+        trackEvent('zoo_keeper_download');
       } catch (error) {
         console.error('Failed to export Zoo Keeper ID', error);
         alert('We could not create the download. If you are running this page locally, try serving it via http:// (e.g. “python3 -m http.server”) and upload a local photo.');
@@ -548,6 +559,43 @@
     whenFontsReady.then(() => {
       if (templateImage.complete) drawCard();
     });
+  })();
+
+  (function setupVideoTracking() {
+    const videoElement = document.getElementById('assemblyVideo');
+    if (!videoElement) return;
+    const pageLabel = 'wts-02-en';
+    let videoEventSent = false;
+
+    function trackVideoPlay() {
+      if (videoEventSent || typeof gtag !== 'function') return;
+      videoEventSent = true;
+      gtag('event', 'assembly_video_play', {
+        event_category: 'Video',
+        event_label: pageLabel
+      });
+    }
+
+    function onYouTubeIframeAPIReady() {
+      new YT.Player('assemblyVideo', {
+        events: {
+          onStateChange: event => {
+            if (event.data === YT.PlayerState.PLAYING) {
+              trackVideoPlay();
+            }
+          }
+        }
+      });
+    }
+
+    if (window.YT && typeof YT.Player === 'function') {
+      onYouTubeIframeAPIReady();
+    } else {
+      window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    }
   })();
 </script>
 </body>

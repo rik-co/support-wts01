@@ -263,7 +263,7 @@
 <section id="video" class="container text-center my-5">
   <h2 class="section-title">📺 Video de Ensamblaje</h2>
   <div class="embed-responsive embed-responsive-16by9">
-    <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/XoQgp6NDo8c?si=HiSCFIQv7iRX-1l5" allowfullscreen></iframe>
+    <iframe id="assemblyVideo" class="embed-responsive-item" src="https://www.youtube.com/embed/XoQgp6NDo8c?enablejsapi=1&si=HiSCFIQv7iRX-1l5" allowfullscreen></iframe>
   </div>
 </section>
 
@@ -327,10 +327,15 @@
     const nameInput = document.getElementById('nameInput');
     const ageInput = document.getElementById('ageInput');
     const photoInput = document.getElementById('photoInput');
+    const pageLabel = 'wts-02-es';
     const templateImage = new Image();
-    templateImage.crossOrigin = 'anonymous';
+    const isFileProtocol = window.location.protocol === 'file:';
+    if (!isFileProtocol) {
+      templateImage.crossOrigin = 'anonymous';
+    }
     templateImage.src = canvas.dataset.template || '../assets/zoo_keeper_id_template.png';
     let templateLoaded = false;
+    let templateFailed = false;
     let activeObjectUrl = null;
     templateImage.onload = () => {
       templateLoaded = true;
@@ -395,7 +400,21 @@
         return;
       }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+      if (!templateFailed) {
+        ctx.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.fillStyle = '#f7ead1';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#c2a272';
+        ctx.lineWidth = 18;
+        ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
+        ctx.fillStyle = '#c2522c';
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 72px "Fredoka One", "Open Sans", sans-serif';
+        ctx.fillText('Vista previa no disponible', canvas.width / 2, canvas.height / 2 - 40);
+        ctx.font = 'bold 40px "Open Sans", sans-serif';
+        ctx.fillText('Abre esta página vía http:// para ver la plantilla.', canvas.width / 2, canvas.height / 2 + 20);
+      }
       drawPhoto();
       drawText();
     }
@@ -416,13 +435,22 @@
 
     photoUploadButton.addEventListener('click', () => photoInput.click());
 
+    templateImage.onerror = () => {
+      console.error('Could not load template image. Showing placeholder instead.');
+      templateFailed = true;
+      templateLoaded = true;
+      drawCard();
+    };
+
     photoInput.addEventListener('change', () => {
       const file = photoInput.files && photoInput.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
         const img = new Image();
-        img.crossOrigin = 'anonymous';
+        if (!isFileProtocol) {
+          img.crossOrigin = 'anonymous';
+        }
         img.onload = () => {
           state.photo = img;
           drawCard();
@@ -431,6 +459,15 @@
       };
       reader.readAsDataURL(file);
     });
+
+    function trackEvent(action) {
+      if (typeof gtag === 'function') {
+        gtag('event', action, {
+          event_category: 'Zoo Keeper',
+          event_label: pageLabel
+        });
+      }
+    }
 
     downloadBtn.addEventListener('click', () => {
       const safeName = (state.name || 'credencial-zk')
@@ -468,6 +505,7 @@
         } else {
           triggerDownload(canvas.toDataURL('image/png'));
         }
+        trackEvent('zoo_keeper_download');
       } catch (error) {
         console.error('Failed to export Zoo Keeper ID', error);
         alert('We could not create the download. If you are running this page locally, try serving it via http:// (e.g. `python3 -m http.server`) and upload a local photo.');
@@ -478,6 +516,43 @@
     fontReady.then(() => {
       if (templateImage.complete) drawCard();
     });
+  })();
+
+  (function setupVideoTracking() {
+    const videoElement = document.getElementById('assemblyVideo');
+    if (!videoElement) return;
+    const pageLabel = 'wts-02-es';
+    let videoEventSent = false;
+
+    function trackVideoPlay() {
+      if (videoEventSent || typeof gtag !== 'function') return;
+      videoEventSent = true;
+      gtag('event', 'assembly_video_play', {
+        event_category: 'Video',
+        event_label: pageLabel
+      });
+    }
+
+    function onYouTubeIframeAPIReady() {
+      new YT.Player('assemblyVideo', {
+        events: {
+          onStateChange: event => {
+            if (event.data === YT.PlayerState.PLAYING) {
+              trackVideoPlay();
+            }
+          }
+        }
+      });
+    }
+
+    if (window.YT && typeof YT.Player === 'function') {
+      onYouTubeIframeAPIReady();
+    } else {
+      window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      document.head.appendChild(tag);
+    }
   })();
 </script>
 </body>
