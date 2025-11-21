@@ -210,7 +210,6 @@
 <section id="zoo-id" class="container my-5">
   <div class="zoo-id-wrapper">
     <div class="text-center mb-4">
-      <div class="badge badge-warning text-uppercase px-3 py-2 mb-2">Herramienta Beta</div>
       <h2 class="zoo-id-title mb-2">Generador de Credencial Zoo Keeper</h2>
       <p class="text-muted mb-0">Sube una foto, edita los datos y genera una credencial lista para imprimir en segundos.</p>
     </div>
@@ -223,7 +222,7 @@
       <div class="col-lg-7 zoo-controls">
         <form>
           <div class="form-group">
-            <label class="d-block">Foto (JPG o PNG)</label>
+            <label class="d-block text-uppercase small text-muted">Foto (JPG o PNG)</label>
             <button type="button" class="file-upload" id="photoUploadButton" aria-controls="photoInput">
               <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
               <strong>Elige una foto</strong>
@@ -232,29 +231,30 @@
             <input type="file" id="photoInput" accept="image/*" class="sr-only">
             <small class="form-text text-muted mt-2">Las fotos cuadradas se ven mejor. Centramos y recortamos automáticamente.</small>
           </div>
-          <div class="form-row">
+          <div class="form-row align-items-center">
             <div class="form-group col-md-8">
-              <label for="nameInput">Nombre</label>
-              <input type="text" class="form-control" id="nameInput" maxlength="24" value="Taylor el Valiente">
+              <label class="sr-only" for="nameInput">Nombre</label>
+              <div class="d-flex flex-column flex-md-row w-100">
+                <span class="text-uppercase small text-muted mr-sm-2 mb-1 mb-sm-0">Nombre</span>
+                <input type="text" class="form-control" id="nameInput" maxlength="24" value="Taylor el Valiente">
+              </div>
             </div>
             <div class="form-group col-md-4">
-              <label for="ageInput">Edad</label>
-              <input type="number" min="1" max="99" class="form-control" id="ageInput" value="8">
+              <label class="sr-only" for="ageInput">Edad</label>
+              <div class="d-flex flex-column flex-md-row">
+                <span class="text-uppercase small text-muted mr-sm-2 mb-1 mb-sm-0">Edad</span>
+                <input type="number" min="1" max="99" class="form-control" id="ageInput" value="8">
+              </div>
             </div>
           </div>
         </form>
-      </div>
-    </div>
-    <div class="text-center mt-4">
-      <button type="button" id="downloadBtn" class="btn btn-primary download-btn px-5">
-        <i class="fas fa-download mr-2"></i>Descargar credencial
-      </button>
-      <small class="d-block text-center text-muted mt-3">Tip: pide una “impresión de foto 4x6” en CVS, Walmart o tu laboratorio favorito.</small>
-      <div class="text-center mt-4 w-100">
-        <button type="button" id="downloadBtn" class="btn btn-primary download-btn px-5">
-          <i class="fas fa-download mr-2"></i>Descargar credencial
-        </button>
-        <small class="d-block text-center text-muted mt-3">Tip: pide una “impresión de foto 4x6” en CVS, Walmart o tu laboratorio favorito.</small>
+        <div class="text-center mt-4">
+          <button type="button" id="downloadBtn" class="btn btn-primary download-btn px-5 mt-2">
+            <i class="fas fa-download mr-2"></i>Descargar credencial
+          </button>
+          <small class="d-block text-center text-muted mt-3">Tip: pide una “impresión de foto 4x6” en CVS, Walmart o tu laboratorio favorito.</small>
+          <p class="text-center text-muted mb-0 small">Aviso de privacidad: Todo el procesamiento sucede localmente en tu navegador. No recopilamos, transmitimos ni almacenamos fotos, nombres, edades ni información personal generada aquí.</p>
+        </div>
       </div>
     </div>
   </div>
