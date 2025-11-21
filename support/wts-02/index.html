@@ -436,6 +436,8 @@
 
     photoUploadButton.addEventListener('click', () => photoInput.click());
 
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
     function trackEvent(action) {
       if (typeof gtag === 'function') {
         gtag('event', action, {
@@ -458,6 +460,12 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+
+        if (isIOS) {
+          setTimeout(() => {
+            window.open(url, '_blank');
+          }, 200);
+        }
       };
 
       const revokeActiveUrl = () => {
