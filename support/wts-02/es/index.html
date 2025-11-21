@@ -499,12 +499,9 @@
           canvas.toBlob(blob => {
             if (!blob) return;
             const dataUrl = URL.createObjectURL(blob);
-            const iosWindow = window.open(dataUrl, '_blank');
-            if (!iosWindow) {
-              alert('Permite las ventanas emergentes para descargar tu credencial.');
-            }
-            setTimeout(() => URL.revokeObjectURL(dataUrl), 2000);
             trackEvent('zoo_keeper_download');
+            window.location.href = dataUrl;
+            setTimeout(() => URL.revokeObjectURL(dataUrl), 2000);
           }, 'image/png');
         } catch (error) {
           console.error('Failed to export Zoo Keeper ID', error);
