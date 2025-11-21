@@ -460,12 +460,6 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-
-        if (isIOS) {
-          setTimeout(() => {
-            window.open(url, '_blank');
-          }, 200);
-        }
       };
 
       const revokeActiveUrl = () => {
@@ -476,6 +470,21 @@
       };
 
       revokeActiveUrl();
+
+      if (isIOS) {
+        try {
+          const dataUrl = canvas.toDataURL('image/png');
+          const iosWindow = window.open(dataUrl, '_blank');
+          if (!iosWindow) {
+            alert('Please allow pop-ups to download your badge.');
+          }
+          trackEvent('zoo_keeper_download');
+        } catch (error) {
+          console.error('Failed to export Zoo Keeper ID', error);
+          alert('We could not create the download. If you are running this page locally, try serving it via http:// (e.g. “python3 -m http.server”) and upload a local photo.');
+        }
+        return;
+      }
 
       try {
         if (canvas.toBlob) {

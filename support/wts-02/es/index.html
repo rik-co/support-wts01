@@ -483,12 +483,6 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-
-        if (isIOS) {
-          setTimeout(() => {
-            window.open(url, '_blank');
-          }, 200);
-        }
       };
 
       const revokeActiveUrl = () => {
@@ -499,6 +493,21 @@
       };
 
       revokeActiveUrl();
+
+      if (isIOS) {
+        try {
+          const dataUrl = canvas.toDataURL('image/png');
+          const iosWindow = window.open(dataUrl, '_blank');
+          if (!iosWindow) {
+            alert('Permite las ventanas emergentes para descargar tu credencial.');
+          }
+          trackEvent('zoo_keeper_download');
+        } catch (error) {
+          console.error('Failed to export Zoo Keeper ID', error);
+          alert('No pudimos crear la descarga. Si estás abriendo esta página localmente, sirve el sitio con http:// (por ejemplo `python3 -m http.server`) y sube una foto desde tu dispositivo.');
+        }
+        return;
+      }
 
       try {
         if (canvas.toBlob) {
