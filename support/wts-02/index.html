@@ -108,7 +108,7 @@
     .zoo-preview-card {
       background: #fff;
       border-radius: 18px;
-      padding: 1.5rem;
+      padding: 1rem;
       box-shadow: inset 0 0 0 4px #e3c9a4;
     }
     .zoo-preview-card canvas {
@@ -122,6 +122,37 @@
       font-size: 0.9rem;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+    }
+    .file-upload {
+      border: 2px solid #d7e1f8;
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      background: #f8fbff;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      cursor: pointer;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .file-upload:hover {
+      border-color: #90b4ff;
+      background: #ebf2ff;
+    }
+    .file-upload input {
+      display: none;
+    }
+    .file-upload strong {
+      display: block;
+      font-size: 1rem;
+      color: #274b8f;
+      margin-top: 0.5rem;
+    }
+    .file-upload span {
+      display: block;
+      font-size: 0.9rem;
+      color: #6c7c98;
     }
     .download-btn {
       font-weight: 600;
@@ -188,17 +219,18 @@
         <div class="zoo-preview-card">
           <canvas id="zooCanvas" width="900" height="1200" data-template="assets/zoo_keeper_id_template.png" aria-label="Zoo Keeper ID preview"></canvas>
         </div>
-        <button type="button" id="downloadBtn" class="btn btn-primary btn-block download-btn mt-3">
-          <i class="fas fa-download mr-2"></i>Download ID
-        </button>
-        <small class="d-block text-center text-muted mt-3">Tip: choose “4x6 photo print” at CVS, Walmart, or your favorite photo printer.</small>
       </div>
       <div class="col-lg-7 zoo-controls">
         <form>
           <div class="form-group">
-            <label for="photoInput">Photo (JPG or PNG)</label>
-            <input type="file" class="form-control-file" id="photoInput" accept="image/*">
-            <small class="form-text text-muted">Square photos work best. We’ll automatically center and crop the image.</small>
+            <label class="d-block">Photo (JPG or PNG)</label>
+            <button type="button" class="file-upload" id="photoUploadButton" aria-controls="photoInput">
+              <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+              <strong>Choose a photo</strong>
+              <span>Tap to browse your library</span>
+            </button>
+            <input type="file" id="photoInput" accept="image/*" class="sr-only">
+            <small class="form-text text-muted mt-2">Square photos work best. We’ll automatically center and crop the image.</small>
           </div>
           <div class="form-row">
             <div class="form-group col-md-8">
@@ -211,6 +243,12 @@
             </div>
           </div>
         </form>
+      </div>
+      <div class="text-center mt-4 w-100">
+        <button type="button" id="downloadBtn" class="btn btn-primary download-btn px-5">
+          <i class="fas fa-download mr-2"></i>Download ID
+        </button>
+        <small class="d-block text-center text-muted mt-3">Tip: choose “4x6 photo print” at CVS, Walmart, or your favorite photo printer.</small>
       </div>
     </div>
   </div>
@@ -284,9 +322,13 @@
     const photoInput = document.getElementById('photoInput');
 
     const templateImage = new Image();
-    templateImage.crossOrigin = 'anonymous';
+    const isFileProtocol = window.location.protocol === 'file:';
+    if (!isFileProtocol) {
+      templateImage.crossOrigin = 'anonymous';
+    }
     templateImage.src = canvas.dataset.template || 'assets/zoo_keeper_id_template.png';
     let templateLoaded = false;
+    let templateFailed = false;
     templateImage.onload = () => {
       templateLoaded = true;
       drawCard();
@@ -351,7 +393,21 @@
     function drawCard() {
       if (!templateLoaded) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+      if (!templateFailed) {
+        ctx.drawImage(templateImage, 0, 0, canvas.width, canvas.height);
+      } else {
+        ctx.fillStyle = '#f7ead1';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#c2a272';
+        ctx.lineWidth = 18;
+        ctx.strokeRect(12, 12, canvas.width - 24, canvas.height - 24);
+        ctx.fillStyle = '#c2522c';
+        ctx.textAlign = 'center';
+        ctx.font = 'bold 72px "Fredoka One", "Open Sans", sans-serif';
+        ctx.fillText('Preview unavailable', canvas.width / 2, canvas.height / 2 - 40);
+        ctx.font = 'bold 40px "Open Sans", sans-serif';
+        ctx.fillText('Open this page via http:// to view the template.', canvas.width / 2, canvas.height / 2 + 20);
+      }
       drawPhoto();
       drawText();
     }
@@ -368,13 +424,68 @@
       drawCard();
     });
 
+    const photoUploadButton = document.getElementById('photoUploadButton');
+
+    photoUploadButton.addEventListener('click', () => photoInput.click());
+
+    downloadBtn.addEventListener('click', () => {
+      const safeName = (state.name || 'zoo-keeper-id')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+
+      const triggerDownload = url => {
+        const link = document.createElement('a');
+        link.download = `${safeName || 'zoo-keeper-id'}.png`;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+
+      const revokeActiveUrl = () => {
+        if (activeObjectUrl) {
+          URL.revokeObjectURL(activeObjectUrl);
+          activeObjectUrl = null;
+        }
+      };
+
+      revokeActiveUrl();
+
+      try {
+        if (canvas.toBlob) {
+          canvas.toBlob(blob => {
+            if (!blob) return;
+            const url = URL.createObjectURL(blob);
+            activeObjectUrl = url;
+            triggerDownload(url);
+            setTimeout(revokeActiveUrl, 2000);
+          }, 'image/png');
+        } else {
+          triggerDownload(canvas.toDataURL('image/png'));
+        }
+      } catch (error) {
+        console.error('Failed to export Zoo Keeper ID', error);
+        alert('We could not create the download. If you are running this page locally, try serving it via http:// (e.g. “python3 -m http.server”) and upload a local photo.');
+      }
+    });
+
+    templateImage.onerror = () => {
+      console.error('Could not load template image. Showing placeholder instead.');
+      templateFailed = true;
+      templateLoaded = true;
+      drawCard();
+    };
+
     photoInput.addEventListener('change', () => {
       const file = photoInput.files && photoInput.files[0];
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
         const img = new Image();
-        img.crossOrigin = 'anonymous';
+        if (!isFileProtocol) {
+          img.crossOrigin = 'anonymous';
+        }
         img.onload = () => {
           state.photo = img;
           drawCard();

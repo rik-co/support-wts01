@@ -123,6 +123,37 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
+    .file-upload {
+      border: 2px solid #d7e1f8;
+      border-radius: 12px;
+      padding: 1rem;
+      text-align: center;
+      background: #f8fbff;
+      transition: border-color 0.2s ease, background 0.2s ease;
+      cursor: pointer;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .file-upload:hover {
+      border-color: #90b4ff;
+      background: #ebf2ff;
+    }
+    .file-upload input {
+      display: none;
+    }
+    .file-upload strong {
+      display: block;
+      font-size: 1rem;
+      color: #274b8f;
+      margin-top: 0.5rem;
+    }
+    .file-upload span {
+      display: block;
+      font-size: 0.9rem;
+      color: #6c7c98;
+    }
     .download-btn {
       font-weight: 600;
       padding: 0.75rem 1.5rem;
@@ -188,17 +219,18 @@
         <div class="zoo-preview-card">
           <canvas id="zooCanvas" width="900" height="1200" data-template="../assets/zoo_keeper_id_template.png" aria-label="Vista previa de la credencial"></canvas>
         </div>
-        <button type="button" id="downloadBtn" class="btn btn-primary btn-block download-btn mt-3">
-          <i class="fas fa-download mr-2"></i>Descargar credencial
-        </button>
-        <small class="d-block text-center text-muted mt-3">Tip: pide una “impresión de foto 4x6” en CVS, Walmart o tu laboratorio favorito.</small>
       </div>
       <div class="col-lg-7 zoo-controls">
         <form>
           <div class="form-group">
-            <label for="photoInput">Foto (JPG o PNG)</label>
-            <input type="file" class="form-control-file" id="photoInput" accept="image/*">
-            <small class="form-text text-muted">Las fotos cuadradas se ven mejor. Centramos y recortamos automáticamente.</small>
+            <label class="d-block">Foto (JPG o PNG)</label>
+            <button type="button" class="file-upload" id="photoUploadButton" aria-controls="photoInput">
+              <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+              <strong>Elige una foto</strong>
+              <span>Toca para elegir desde tu galería</span>
+            </button>
+            <input type="file" id="photoInput" accept="image/*" class="sr-only">
+            <small class="form-text text-muted mt-2">Las fotos cuadradas se ven mejor. Centramos y recortamos automáticamente.</small>
           </div>
           <div class="form-row">
             <div class="form-group col-md-8">
@@ -211,6 +243,18 @@
             </div>
           </div>
         </form>
+      </div>
+    </div>
+    <div class="text-center mt-4">
+      <button type="button" id="downloadBtn" class="btn btn-primary download-btn px-5">
+        <i class="fas fa-download mr-2"></i>Descargar credencial
+      </button>
+      <small class="d-block text-center text-muted mt-3">Tip: pide una “impresión de foto 4x6” en CVS, Walmart o tu laboratorio favorito.</small>
+      <div class="text-center mt-4 w-100">
+        <button type="button" id="downloadBtn" class="btn btn-primary download-btn px-5">
+          <i class="fas fa-download mr-2"></i>Descargar credencial
+        </button>
+        <small class="d-block text-center text-muted mt-3">Tip: pide una “impresión de foto 4x6” en CVS, Walmart o tu laboratorio favorito.</small>
       </div>
     </div>
   </div>
@@ -366,6 +410,10 @@
       state.age = digits;
       drawCard();
     });
+
+    const photoUploadButton = document.getElementById('photoUploadButton');
+
+    photoUploadButton.addEventListener('click', () => photoInput.click());
 
     photoInput.addEventListener('change', () => {
       const file = photoInput.files && photoInput.files[0];
