@@ -127,6 +127,12 @@
   </nav>
 </header>
 
+
+    <section class="container my-4" id="thank-you-banner" style="display:none;">
+      <div class="alert alert-success mb-0" role="alert">
+        Thank you! Your message was sent successfully.
+      </div>
+    </section>
 <section id="hero" class="hero">
   <div class="hero-content container">
     <h1>WTS-01 Wooden Toy Organizer</h1>
@@ -161,7 +167,8 @@
   <h2 class="section-title text-center">📩 Contact Support</h2>
   <form action="https://formsubmit.co/fd550d31e6c61de91199117539ab45f8" method="POST" class="contact-form">
     <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="source" value="WTS-01 EN Contact">
+    <input type="hidden" name="_next" value="https://www.paquber.com/support/wts-01/index.html#thanks">
+    <input type="hidden" name="source" value="WTS-01 EN Contact">name="source" value="WTS-01 EN Contact">
     <div class="form-group">
       <label>Name</label>
       <input name="name" type="text" class="form-control" required />
@@ -207,5 +214,14 @@
     </div>
   </div>
 </footer>
+
+<script>
+  (function() {
+    if (window.location.hash === '#thanks' && document.getElementById('thank-you-banner')) {
+      document.getElementById('thank-you-banner').style.display = 'block';
+    }
+  })();
+</script>
+
 </body>
 </html>
