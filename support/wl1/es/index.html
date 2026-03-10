@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WL1 - Próximamente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --text: #1d241f;
+      --muted: #5f665e;
+      --card: rgba(255, 252, 245, 0.82);
+      --shadow: rgba(40, 56, 44, 0.15);
+      --bg-top: #f7efe1;
+      --bg-bottom: #dbe8e2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: "Space Grotesk", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.7), transparent 42%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    }
+
+    main {
+      width: min(100%, 640px);
+      padding: 48px 32px;
+      text-align: center;
+      border: 1px solid rgba(29, 36, 31, 0.08);
+      border-radius: 28px;
+      background: var(--card);
+      box-shadow: 0 24px 80px var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    p {
+      margin: 0 0 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.8rem, 9vw, 5.4rem);
+      line-height: 0.95;
+      letter-spacing: -0.06em;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p>WL1</p>
+    <h1>Próximamente</h1>
+  </main>
+</body>
+</html>
