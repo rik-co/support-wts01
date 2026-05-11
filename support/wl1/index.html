@@ -520,13 +520,53 @@
       background: #f8faf8;
     }
 
-    .screenshot-card img {
+    .screenshot-trigger {
       width: 100%;
-      height: clamp(420px, 48vw, 560px);
-      object-fit: contain;
-      object-position: top center;
+      display: grid;
+      place-items: center;
+      position: relative;
+      padding: 18px 0;
+      border: 0;
       border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(20, 107, 84, 0.06), rgba(36, 95, 147, 0.06)),
+        #f8faf8;
+      cursor: zoom-in;
+    }
+
+    .screenshot-trigger img {
+      width: min(46%, 124px);
+      height: 220px;
+      object-fit: contain;
+      object-position: center;
+      border: 1px solid #ccd7d1;
+      border-radius: 14px;
       background: white;
+      box-shadow: 0 12px 28px rgba(32, 44, 38, 0.14);
+    }
+
+    .screenshot-trigger::before {
+      content: "";
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: white;
+      color: var(--accent-dark);
+      border: 1px solid var(--line);
+      font-weight: 800;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%230c4d3b' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .screenshot-trigger:focus-visible {
+      outline: 3px solid rgba(20, 107, 84, 0.35);
+      outline-offset: -3px;
     }
 
     .screenshot-card div {
@@ -631,13 +671,58 @@
       gap: 14px;
     }
 
-    .phone-screens img {
-      width: 100%;
-      height: auto;
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 28px;
+      background: rgba(10, 15, 12, 0.72);
+    }
+
+    .lightbox.open {
+      display: grid;
+    }
+
+    .lightbox-panel {
+      position: relative;
+      width: min(100%, 560px);
+      max-height: calc(100vh - 56px);
+      padding: 16px;
       border-radius: var(--radius);
-      border: 1px solid var(--line);
       background: white;
-      box-shadow: 0 12px 36px rgba(32, 44, 38, 0.05);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.36);
+    }
+
+    .lightbox-panel img {
+      width: 100%;
+      max-height: calc(100vh - 120px);
+      object-fit: contain;
+      border-radius: 6px;
+      background: white;
+    }
+
+    .lightbox-caption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: white;
+      color: var(--ink);
+      font-size: 1.25rem;
+      font-weight: 800;
+      cursor: pointer;
     }
 
     .form-layout {
@@ -986,19 +1071,27 @@
         </div>
         <div class="screenshots" aria-label="iPhone pairing screenshots">
           <article class="screenshot-card">
-            <img src="assets/pairing-settings-carplay.jpg" alt="iPhone Settings General CarPlay screen" width="520" height="1130" loading="lazy">
+            <button class="screenshot-trigger" type="button" data-full="assets/pairing-settings-carplay.jpg" data-caption="Open CarPlay settings">
+              <img src="assets/pairing-settings-carplay.jpg" alt="iPhone Settings General CarPlay screen" width="520" height="1130" loading="lazy">
+            </button>
             <div><h3>Open CarPlay</h3><p>Go to iPhone CarPlay settings.</p></div>
           </article>
           <article class="screenshot-card">
-            <img src="assets/pairing-other-cars.jpg" alt="BW-smartBox listed under Other Cars" width="520" height="1130" loading="lazy">
+            <button class="screenshot-trigger" type="button" data-full="assets/pairing-other-cars.jpg" data-caption="Select WL1">
+              <img src="assets/pairing-other-cars.jpg" alt="BW-smartBox listed under Other Cars" width="520" height="1130" loading="lazy">
+            </button>
             <div><h3>Select WL1</h3><p>Tap the BW-smartBox device.</p></div>
           </article>
           <article class="screenshot-card">
-            <img src="assets/pairing-request.jpg" alt="Bluetooth pairing request for BW-smartBox" width="520" height="1130" loading="lazy">
+            <button class="screenshot-trigger" type="button" data-full="assets/pairing-request.jpg" data-caption="Accept Bluetooth pairing">
+              <img src="assets/pairing-request.jpg" alt="Bluetooth pairing request for BW-smartBox" width="520" height="1130" loading="lazy">
+            </button>
             <div><h3>Pair</h3><p>Accept the Bluetooth pairing request.</p></div>
           </article>
           <article class="screenshot-card">
-            <img src="assets/pairing-connect.jpg" alt="Connect to CarPlay confirmation on iPhone" width="520" height="1130" loading="lazy">
+            <button class="screenshot-trigger" type="button" data-full="assets/pairing-connect.jpg" data-caption="Connect to CarPlay">
+              <img src="assets/pairing-connect.jpg" alt="Connect to CarPlay confirmation on iPhone" width="520" height="1130" loading="lazy">
+            </button>
             <div><h3>Connect</h3><p>Allow CarPlay to connect wirelessly.</p></div>
           </article>
         </div>
@@ -1093,9 +1186,24 @@
         </div>
         <div class="update-flow">
           <div class="phone-screens" aria-label="Firmware update screenshots">
-            <img src="assets/firmware-address.jpg" alt="Open 192.168.8.1 in Safari" width="520" height="1130" loading="lazy">
-            <img src="assets/firmware-online-update.jpg" alt="WL1 online update screen with a new version available" width="520" height="1130" loading="lazy">
-            <img src="assets/firmware-progress.jpg" alt="WL1 firmware update progress screen" width="520" height="1130" loading="lazy">
+            <article class="screenshot-card">
+              <button class="screenshot-trigger" type="button" data-full="assets/firmware-address.jpg" data-caption="Open 192.168.8.1 in Safari">
+                <img src="assets/firmware-address.jpg" alt="Open 192.168.8.1 in Safari" width="520" height="1130" loading="lazy">
+              </button>
+              <div><h3>Open page</h3><p>Use Safari and enter the update address.</p></div>
+            </article>
+            <article class="screenshot-card">
+              <button class="screenshot-trigger" type="button" data-full="assets/firmware-online-update.jpg" data-caption="Check online update">
+                <img src="assets/firmware-online-update.jpg" alt="WL1 online update screen with a new version available" width="520" height="1130" loading="lazy">
+              </button>
+              <div><h3>Check update</h3><p>Confirm whether a new version is available.</p></div>
+            </article>
+            <article class="screenshot-card">
+              <button class="screenshot-trigger" type="button" data-full="assets/firmware-progress.jpg" data-caption="Firmware update progress">
+                <img src="assets/firmware-progress.jpg" alt="WL1 firmware update progress screen" width="520" height="1130" loading="lazy">
+              </button>
+              <div><h3>Wait</h3><p>Keep power connected while update completes.</p></div>
+            </article>
           </div>
           <div class="grid-2">
             <div class="card"><h3>1. Open update page</h3><p>Use Safari on iPhone and open <span class="inline-code">192.168.8.1</span>.</p></div>
@@ -1160,12 +1268,70 @@
     </div>
   </footer>
 
+  <div class="lightbox" id="screenshot-lightbox" aria-hidden="true">
+    <div class="lightbox-panel" role="dialog" aria-modal="true" aria-label="Instruction screenshot preview">
+      <button class="lightbox-close" type="button" aria-label="Close screenshot preview">&times;</button>
+      <img id="lightbox-image" src="" alt="">
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+  </div>
+
   <script>
     (function() {
       var banner = document.getElementById('thank-you-banner');
       if (window.location.hash === '#thanks' && banner) {
         banner.style.display = 'block';
       }
+
+      var lightbox = document.getElementById('screenshot-lightbox');
+      var lightboxImage = document.getElementById('lightbox-image');
+      var lightboxCaption = document.getElementById('lightbox-caption');
+      var closeButton = lightbox ? lightbox.querySelector('.lightbox-close') : null;
+      var lastTrigger = null;
+
+      function closeLightbox() {
+        if (!lightbox) return;
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        lightboxImage.removeAttribute('src');
+        lightboxImage.alt = '';
+        lightboxCaption.textContent = '';
+        if (lastTrigger) {
+          lastTrigger.focus();
+          lastTrigger = null;
+        }
+      }
+
+      document.querySelectorAll('.screenshot-trigger').forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+          if (!lightbox) return;
+          lastTrigger = trigger;
+          lightboxImage.src = trigger.dataset.full;
+          lightboxImage.alt = trigger.querySelector('img').alt;
+          lightboxCaption.textContent = trigger.dataset.caption || '';
+          lightbox.classList.add('open');
+          lightbox.setAttribute('aria-hidden', 'false');
+          if (closeButton) closeButton.focus();
+        });
+      });
+
+      if (closeButton) {
+        closeButton.addEventListener('click', closeLightbox);
+      }
+
+      if (lightbox) {
+        lightbox.addEventListener('click', function(event) {
+          if (event.target === lightbox) {
+            closeLightbox();
+          }
+        });
+      }
+
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && lightbox && lightbox.classList.contains('open')) {
+          closeLightbox();
+        }
+      });
     })();
   </script>
 </body>
