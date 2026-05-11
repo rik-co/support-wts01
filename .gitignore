@@ -1,1 +1,4 @@
 .DS_Store
+.private/
+.playwright-mcp/
+wl1-mockup-mobile.png
