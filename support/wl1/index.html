@@ -463,6 +463,88 @@
       box-shadow: var(--shadow);
     }
 
+    .video-row {
+      margin-top: 18px;
+    }
+
+    .video-card {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1fr);
+      gap: 0;
+      overflow: hidden;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: white;
+      color: var(--ink);
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+      box-shadow: 0 12px 36px rgba(32, 44, 38, 0.05);
+    }
+
+    .video-card:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    .video-thumb {
+      position: relative;
+      min-height: 210px;
+      background:
+        linear-gradient(135deg, rgba(20, 107, 84, 0.1), rgba(36, 95, 147, 0.08)),
+        #edf3ef;
+    }
+
+    .video-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-play {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      pointer-events: none;
+    }
+
+    .video-play span {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.78);
+      background: rgba(255, 255, 255, 0.56);
+      color: var(--accent-dark);
+      box-shadow: 0 10px 24px rgba(17, 23, 20, 0.18);
+      backdrop-filter: blur(8px);
+    }
+
+    .video-play svg {
+      width: 20px;
+      height: 20px;
+      margin-left: 2px;
+      fill: currentColor;
+    }
+
+    .video-copy {
+      display: grid;
+      align-content: center;
+      padding: 24px;
+    }
+
+    .video-copy p {
+      margin-top: 10px;
+      color: var(--muted);
+    }
+
+    .video-copy .eyebrow {
+      margin-bottom: 10px;
+    }
+
     .steps {
       counter-reset: step;
       display: grid;
@@ -725,6 +807,24 @@
       cursor: pointer;
     }
 
+    .video-lightbox .lightbox-panel {
+      width: min(100%, 880px);
+    }
+
+    .video-frame-wrap {
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #0b0f0d;
+    }
+
+    .video-frame-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
     .form-layout {
       grid-template-columns: 0.78fr 1.22fr;
       align-items: start;
@@ -821,6 +921,10 @@
         grid-template-columns: 1fr;
       }
 
+      .video-card {
+        grid-template-columns: 1fr;
+      }
+
       .steps,
       .screenshots {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -899,6 +1003,14 @@
 
       .timeline-row {
         grid-template-columns: 1fr;
+      }
+
+      .video-thumb {
+        min-height: 190px;
+      }
+
+      .video-copy {
+        padding: 20px;
       }
     }
   </style>
@@ -1008,6 +1120,23 @@
             <p>Start the vehicle, wait for the head unit to load, connect your iPhone with a USB data cable, and confirm CarPlay starts from that port. If CarPlay only works wirelessly, WL1 cannot convert that connection.</p>
           </div>
         </div>
+        <div class="video-row">
+          <button class="video-card" type="button" data-video-id="xaE775TBKzg" data-video-title="How to check compatibility before buying">
+            <span class="video-thumb">
+              <img src="https://i.ytimg.com/vi/xaE775TBKzg/hqdefault.jpg" alt="How to check compatibility before buying a Wireless CarPlay Adapter" loading="lazy">
+              <span class="video-play" aria-hidden="true">
+                <span>
+                  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                </span>
+              </span>
+            </span>
+            <span class="video-copy">
+              <span class="eyebrow">Video guide</span>
+              <h3>How to check compatibility before buying</h3>
+              <p>See how to confirm your car supports CarPlay and whether it has the wired CarPlay connection WL1 requires.</p>
+            </span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -1094,6 +1223,23 @@
             </button>
             <div><h3>Connect</h3><p>Allow CarPlay to connect wirelessly.</p></div>
           </article>
+        </div>
+        <div class="video-row">
+          <button class="video-card" type="button" data-video-id="E4ffLI_4S8M" data-video-title="PAQUBER WL1 overview and setup">
+            <span class="video-thumb">
+              <img src="https://i.ytimg.com/vi/E4ffLI_4S8M/hqdefault.jpg" alt="PAQUBER Wireless CarPlay Adapter overview and setup video" loading="lazy">
+              <span class="video-play" aria-hidden="true">
+                <span>
+                  <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                </span>
+              </span>
+            </span>
+            <span class="video-copy">
+              <span class="eyebrow">Video guide</span>
+              <h3>Watch the WL1 overview and setup flow</h3>
+              <p>Quick unboxing, wired CarPlay compatibility check, adapter connection, and first-time pairing in one walkthrough.</p>
+            </span>
+          </button>
         </div>
       </div>
     </section>
@@ -1276,6 +1422,16 @@
     </div>
   </div>
 
+  <div class="lightbox video-lightbox" id="video-lightbox" aria-hidden="true">
+    <div class="lightbox-panel" role="dialog" aria-modal="true" aria-label="Video guide player">
+      <button class="lightbox-close" type="button" aria-label="Close video">&times;</button>
+      <div class="video-frame-wrap">
+        <iframe id="video-frame" title="Video guide" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+      <div class="lightbox-caption" id="video-caption"></div>
+    </div>
+  </div>
+
   <script>
     (function() {
       var banner = document.getElementById('thank-you-banner');
@@ -1288,6 +1444,20 @@
       var lightboxCaption = document.getElementById('lightbox-caption');
       var closeButton = lightbox ? lightbox.querySelector('.lightbox-close') : null;
       var lastTrigger = null;
+      var videoLightbox = document.getElementById('video-lightbox');
+      var videoFrame = document.getElementById('video-frame');
+      var videoCaption = document.getElementById('video-caption');
+      var videoCloseButton = videoLightbox ? videoLightbox.querySelector('.lightbox-close') : null;
+      var lastVideoTrigger = null;
+      var pageLabel = 'wl1-en';
+
+      function trackEvent(action, params) {
+        if (typeof gtag !== 'function') return;
+        gtag('event', action, Object.assign({
+          event_category: 'WL1 Support',
+          event_label: pageLabel
+        }, params || {}));
+      }
 
       function closeLightbox() {
         if (!lightbox) return;
@@ -1311,6 +1481,10 @@
           lightboxCaption.textContent = trigger.dataset.caption || '';
           lightbox.classList.add('open');
           lightbox.setAttribute('aria-hidden', 'false');
+          trackEvent('wl1_screenshot_preview_open', {
+            screenshot_src: trigger.dataset.full,
+            screenshot_label: trigger.dataset.caption || ''
+          });
           if (closeButton) closeButton.focus();
         });
       });
@@ -1327,9 +1501,52 @@
         });
       }
 
+      function closeVideoLightbox() {
+        if (!videoLightbox) return;
+        videoLightbox.classList.remove('open');
+        videoLightbox.setAttribute('aria-hidden', 'true');
+        videoFrame.removeAttribute('src');
+        videoCaption.textContent = '';
+        if (lastVideoTrigger) {
+          lastVideoTrigger.focus();
+          lastVideoTrigger = null;
+        }
+      }
+
+      document.querySelectorAll('.video-card').forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+          if (!videoLightbox) return;
+          lastVideoTrigger = trigger;
+          videoFrame.src = 'https://www.youtube-nocookie.com/embed/' + trigger.dataset.videoId + '?autoplay=1&rel=0';
+          videoCaption.textContent = trigger.dataset.videoTitle || '';
+          videoLightbox.classList.add('open');
+          videoLightbox.setAttribute('aria-hidden', 'false');
+          trackEvent('wl1_video_open', {
+            video_id: trigger.dataset.videoId,
+            video_title: trigger.dataset.videoTitle || ''
+          });
+          if (videoCloseButton) videoCloseButton.focus();
+        });
+      });
+
+      if (videoCloseButton) {
+        videoCloseButton.addEventListener('click', closeVideoLightbox);
+      }
+
+      if (videoLightbox) {
+        videoLightbox.addEventListener('click', function(event) {
+          if (event.target === videoLightbox) {
+            closeVideoLightbox();
+          }
+        });
+      }
+
       document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape' && lightbox && lightbox.classList.contains('open')) {
           closeLightbox();
+        }
+        if (event.key === 'Escape' && videoLightbox && videoLightbox.classList.contains('open')) {
+          closeVideoLightbox();
         }
       });
     })();
