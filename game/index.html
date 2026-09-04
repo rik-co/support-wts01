@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Морской бой</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<main class="cabinet">
+  <header><span class="serial">ИГРОВОЙ АВТОМАТ / 01</span><button id="sound" aria-pressed="true">ЗВУК ВКЛ</button></header>
+  <div class="title"><span class="star">★</span><h1>МОРСКОЙ БОЙ</h1><p>ТОРПЕДНАЯ АТАКА</p></div>
+  <section class="viewport" aria-label="Море через перископ">
+    <canvas id="sea" width="1000" height="560" aria-label="Игровое поле. Наведение стрелками влево и вправо, выстрел пробелом."></canvas>
+    <div id="overlay"><span class="eyebrow">ЗАНЯТЬ БОЕВОЙ ПОСТ</span><h2 id="headline">Цель на горизонте</h2><p id="intro">Возьмите упреждение.<br>Торпеде нужно время, чтобы дойти до цели.</p><button id="start">НАЧАТЬ ИГРУ <span>→</span></button></div>
+    <span class="scope-label">ПЕРИСКОП · 01</span>
+  </section>
+  <section class="dashboard">
+    <div class="meter"><span>ПОПАДАНИЯ</span><strong id="score">00</strong></div>
+    <div class="ammo"><span>ТОРПЕДЫ</span><div id="rounds"></div><small id="status" role="status">ОЖИДАНИЕ КОМАНДЫ</small></div>
+    <button id="fire" disabled>ПУСК<span>ТОРПЕДЫ</span></button>
+  </section>
+  <footer><span>← → <span class="muted">НАВЕДЕНИЕ</span> <span class="separator">/</span> ПРОБЕЛ <span class="muted">ПУСК</span></span><span class="muted">10 ТОРПЕД · ОДНА ЗАДАЧА</span></footer>
+  <div class="mobile-controls"><button id="left" aria-label="Навести влево">←</button><span>ИЛИ ВЕДИТЕ ПАЛЬЦЕМ ПО МОРЮ</span><button id="right" aria-label="Навести вправо">→</button></div>
+</main>
+<script src="render.js"></script><script src="game.js"></script>
+</body></html>
