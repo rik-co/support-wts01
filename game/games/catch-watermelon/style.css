@@ -25,3 +25,14 @@
   .touch-controls small{display:none}
   footer{display:none}
 }
+/* Invisible rectangular hit areas preserve the printed button artwork. */
+.hit::before{content:'';position:absolute;border-radius:8px}
+.hit[data-lane]::before{inset:-22% -60%}
+.mode-a::before,.mode-b::before,.time::before{inset:-45% -60%}
+/* Fill the gaps halfway so neighboring directions never overlap. */
+.touch-controls button{position:relative}
+.touch-controls button::before{content:'';position:absolute;inset:-4px;border-radius:8px}
+.touch-controls button:nth-child(odd)::before{left:-12px}
+.touch-controls button:nth-child(even)::before{right:-12px}
+.touch-controls button:nth-child(-n+2)::before{top:-10px}
+.touch-controls button:nth-child(n+3)::before{bottom:-10px}

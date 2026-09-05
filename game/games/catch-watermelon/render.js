@@ -15,9 +15,12 @@ const PLAYER_POSES = [
   { x: 190, y: 586, w: 410, h: 570 },
   { x: 785, y: 586, w: 410, h: 570 }
 ];
+function fruitStep(fruit) {
+  return Math.min(FRUIT_STEPS - 1, Math.floor(fruit.progress * FRUIT_STEPS));
+}
 function fruitPosition(fruit) {
   const lane = LANES[fruit.lane];
-  const step = Math.min(FRUIT_STEPS - 1, Math.floor(fruit.progress * FRUIT_STEPS));
+  const step = fruitStep(fruit);
   const p = step / (FRUIT_STEPS - 1);
   return { x: lane.x + (lane.endX - lane.x) * p, y: lane.y + (lane.endY - lane.y) * p };
 }
@@ -61,6 +64,27 @@ function watermelon(ctx, x, y, radius, tilt) {
   ctx.moveTo(0, -radius);
   ctx.quadraticCurveTo(3, -radius - 9, -3, -radius - 10);
   ctx.stroke();
+  ctx.restore();
+}
+function drawBrokenWatermelon(ctx, broken) {
+  const x=broken.lane<2?570:878, y=725;
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.globalAlpha=.88;
+  // Printed LCD-style halves, a jagged edge and scattered seeds at ground level.
+  for(const side of [-1,1]){
+    ctx.save();ctx.translate(side*24,side===1?3:0);ctx.rotate(side*.28);
+    ctx.fillStyle='#354a34';ctx.strokeStyle='#2b3c2b';ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.moveTo(-27,-11);ctx.lineTo(-15,-6);ctx.lineTo(-5,-14);ctx.lineTo(5,-7);ctx.lineTo(17,-13);ctx.lineTo(28,-9);
+    ctx.bezierCurveTo(27,27,-24,30,-27,-11);ctx.closePath();ctx.fill();ctx.stroke();
+    ctx.fillStyle='#929a78';ctx.beginPath();ctx.moveTo(-23,-5);ctx.lineTo(23,-5);ctx.bezierCurveTo(19,20,-18,22,-23,-5);ctx.fill();
+    ctx.fillStyle='#966d52';ctx.beginPath();ctx.moveTo(-20,-7);ctx.lineTo(-6,-10);ctx.lineTo(4,-4);ctx.lineTo(20,-8);ctx.bezierCurveTo(17,15,-15,18,-20,-7);ctx.fill();
+    ctx.fillStyle='#2b3c2b';
+    for(const [sx,sy] of [[-10,1],[0,5],[10,0]]){ctx.beginPath();ctx.ellipse(sx,sy,1.6,3,.5,0,Math.PI*2);ctx.fill();}
+    ctx.restore();
+  }
+  ctx.fillStyle='#354a34';
+  for(const [sx,sy] of [[-54,12],[51,16],[-9,21],[8,19]]){ctx.beginPath();ctx.ellipse(sx,sy,3,1.5,-.4,0,Math.PI*2);ctx.fill();}
   ctx.restore();
 }
 function drawPlayer(ctx, s) {
@@ -122,7 +146,7 @@ function drawGame(ctx, s) {
     const p = fruitPosition(fruit);
     watermelon(ctx, p.x, p.y, 28, fruit.lane < 2 ? -.28 : .28);
   }
-  if (s.flash > 0) {ctx.fillStyle = '#9e352455';ctx.fillRect(359, 700, 731, 60);}
+  for (const broken of s.broken) drawBrokenWatermelon(ctx, broken);
   if (s.phase === 'birthday') {
     for (let i = 0; i < 30; i++) {
       ctx.fillStyle = ['#8c6048', '#aaa064', '#64805c'][i % 3];

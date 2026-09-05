@@ -1,13 +1,16 @@
 'use strict';
 const CONFIG={target:68,maxMisses:3,travelA:3.2,travelB:2.6,spawnA:1.55,spawnB:1.2};
-const state={phase:'idle',score:0,misses:0,lane:3,fruits:[],time:0,spawn:0,flash:0,mode:'A'};
+const state={phase:'idle',score:0,misses:0,lane:3,fruits:[],time:0,spawn:0,broken:[],mode:'A'};
 const portraitScreen=window.matchMedia('(any-pointer: coarse) and (orientation: portrait)');
 const ctx=document.getElementById('screen').getContext('2d');
 const statusEl=document.getElementById('status'),scoreEl=document.getElementById('score');
 const startButton=document.getElementById('start'),pauseButton=document.getElementById('pause'),soundButton=document.getElementById('sound');
 let audioContext,master,muted=false,voices=[],previous=0,musicIndex=0,musicWait=0;
 let timePresses=0;
+let nextStepSound=0;
 const melody=[[60,.75],[60,.25],[62,1],[60,1],[65,1],[64,2],[60,.75],[60,.25],[62,1],[60,1],[67,1],[65,2],[60,.75],[60,.25],[72,1],[69,1],[65,1],[64,1],[62,2],[70,.75],[70,.25],[69,1],[65,1],[67,1],[65,3]];
+// An original descending A-minor phrase with a single-voice watch-like timbre.
+const lossMelody=[[81,.75],[79,.25],[77,.75],[76,.25],[74,1],[77,.5],[76,.5],[71,1],[69,2]];
 function syncAudioButton(){
   const running=audioContext?.state==='running';
   soundButton.textContent=!(!muted)?'Звук: выкл':running?'Звук: вкл':'Включить звук';
@@ -59,10 +62,35 @@ function unlockAudio(recreate=false){
 document.addEventListener('touchend',()=>{
   if(audioContext&&audioContext.state!=='running'&&(!muted))unlockAudio();
 },{passive:true});
-function tone(note,duration=.1){if(muted||document.hidden||portraitScreen.matches||!audioContext||audioContext.state!=='running')return;const o=audioContext.createOscillator(),g=audioContext.createGain(),now=audioContext.currentTime;o.type='triangle';o.frequency.value=440*2**((note-69)/12);g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(.65,now+.012);g.gain.exponentialRampToValueAtTime(.001,now+duration);o.connect(g);g.connect(master);voices.push(o);o.onended=()=>{voices=voices.filter(v=>v!==o);o.disconnect();g.disconnect();};o.start();o.stop(now+duration+.02);}
-function silence(){for(const v of voices){try{v.stop();}catch{}}voices=[];}
+function tone(note,duration=.1,type='triangle',level=.65){if(muted||document.hidden||portraitScreen.matches||!audioContext||audioContext.state!=='running')return;const o=audioContext.createOscillator(),g=audioContext.createGain(),now=audioContext.currentTime;o.type=type;o.frequency.value=440*2**((note-69)/12);g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(level,now+.012);g.gain.exponentialRampToValueAtTime(.001,now+duration);o.connect(g);g.connect(master);voices.push(o);o.onended=()=>{voices=voices.filter(v=>v!==o);o.disconnect();g.disconnect();};o.start();o.stop(now+duration+.02);}
+// Approximate the short piezo pulses measured in the supplied original-game clip.
+const EFFECTS={stepHz:[2500,2800,3800,7500],stepDuration:.028,catchHz:3180,catchDuration:.085,missHz:2860,missDuration:.14};
+function gameEffect(kind,lane=0){
+  if(muted||document.hidden||portraitScreen.matches||audioContext?.state!=='running')return;
+  const now=audioContext.currentTime;
+  const step=kind==='step';
+  // Keep simultaneous fruit steps audible as separate clicks, with a bounded delay.
+  const at=step?Math.max(now,Math.min(nextStepSound,now+.075)):now;
+  if(step)nextStepSound=at+.036;
+  const duration=step?EFFECTS.stepDuration:kind==='catch'?EFFECTS.catchDuration:EFFECTS.missDuration;
+  const frequency=step?EFFECTS.stepHz[lane]:kind==='catch'?EFFECTS.catchHz:EFFECTS.missHz;
+  const oscillator=audioContext.createOscillator(),gain=audioContext.createGain();
+  oscillator.type='square';
+  oscillator.frequency.setValueAtTime(frequency,at);
+  if(kind==='miss')oscillator.frequency.exponentialRampToValueAtTime(720,at+duration);
+  gain.gain.setValueAtTime(0,at);
+  gain.gain.linearRampToValueAtTime(step?.27:.48,at+.001);
+  if(kind==='miss'){
+    for(let i=1;i<7;i++)gain.gain.setValueAtTime(i%2?.12:.48,at+i*.018);
+  }
+  gain.gain.exponentialRampToValueAtTime(.001,at+duration);
+  oscillator.connect(gain);gain.connect(master);voices.push(oscillator);
+  oscillator.onended=()=>{voices=voices.filter(v=>v!==oscillator);oscillator.disconnect();gain.disconnect();};
+  oscillator.start(at);oscillator.stop(at+duration+.005);
+}
+function silence(){nextStepSound=0;for(const v of voices){try{v.stop();}catch{}}voices=[];}
 function refresh(){scoreEl.textContent=String(state.score).padStart(2,'0');startButton.textContent=state.phase==='idle'?'Начать игру':'Начать заново';pauseButton.disabled=!['playing','paused'].includes(state.phase);pauseButton.textContent=state.phase==='paused'?'Продолжить':'Пауза';if(state.phase==='playing')statusEl.textContent=`Игра ${state.mode==='A'?'А':'Б'} · Промахи: ${state.misses} из 3 · Цель: 68`;if(state.phase==='paused')statusEl.textContent='Игра на паузе. Нажмите «Продолжить».';if(state.phase==='over')statusEl.textContent=`Три промаха. Поймано арбузов: ${state.score}. Попробуйте ещё!`;if(state.phase==='birthday')statusEl.textContent='С днём рождения! 68 арбузов пойманы. Время танцевать!';}
-function start(mode='A'){if(portraitScreen.matches)return;timePresses=0;unlockAudio().then(ready=>{if(ready&&state.phase==='playing')tone(72,.15);});silence();Object.assign(state,{phase:'playing',score:0,misses:0,lane:3,fruits:[],time:0,spawn:.7,flash:0,mode});musicIndex=0;musicWait=0;refresh();}
+function start(mode='A'){if(portraitScreen.matches)return;timePresses=0;unlockAudio().then(ready=>{if(ready&&state.phase==='playing')tone(72,.15);});silence();Object.assign(state,{phase:'playing',score:0,misses:0,lane:3,fruits:[],time:0,spawn:.7,broken:[],mode});musicIndex=0;musicWait=0;refresh();}
 function pause(){if(portraitScreen.matches)return;if(state.phase==='playing'){state.phase='paused';silence();}else if(state.phase==='paused'){unlockAudio();state.phase='playing';}refresh();}
 function choose(lane){if(portraitScreen.matches)return;if(state.phase==='playing'){state.lane=lane;}}
 function celebrateBirthday(){
@@ -70,18 +98,40 @@ function celebrateBirthday(){
   state.phase='birthday';
   state.fruits=[];
   state.time=0;
-  state.flash=0;
+  state.broken=[];
   timePresses=0;
   musicIndex=0;
   musicWait=.15;
   silence();
   refresh();
 }
-function resolveFruit(fruit){if(state.lane===fruit.lane){state.score++;tone(76,.09);if(state.score===CONFIG.target)celebrateBirthday();}else{state.misses++;state.flash=.3;tone(40,.22);if(state.misses===CONFIG.maxMisses){state.phase='over';state.fruits=[];}}refresh();}
-function update(dt){if(state.phase==='paused'||document.hidden||portraitScreen.matches)return;state.time+=dt;state.flash=Math.max(0,state.flash-dt);if(state.phase==='birthday'){if(!muted&&audioContext?.state!=='running')return;musicWait-=dt;if(musicWait<=0){const [note,beats]=melody[musicIndex];tone(note,beats*.38);musicWait=beats*.42;musicIndex++;if(musicIndex===melody.length){musicIndex=0;musicWait+=2;}}return;}if(state.phase!=='playing')return;
+function resolveFruit(fruit){
+  if(state.lane===fruit.lane){
+    state.score++;
+    gameEffect('catch',fruit.lane);
+    if(state.score===CONFIG.target)celebrateBirthday();
+  }else{
+    state.misses++;
+    state.broken.push({lane:fruit.lane,age:0});
+    gameEffect('miss',fruit.lane);
+    if(state.misses===CONFIG.maxMisses){state.phase='over';state.fruits=[];musicIndex=0;musicWait=.32;}
+  }
+  refresh();
+}
+function updateLossMusic(dt){
+  if(musicIndex>=lossMelody.length)return;
+  if(!muted&&audioContext?.state!=='running')return;
+  musicWait-=dt;
+  if(musicWait<=0){
+    const [note,beats]=lossMelody[musicIndex++];
+    tone(note,beats*.44,'square',.3);
+    musicWait=beats*.5;
+  }
+}
+function update(dt){if(state.phase==='paused'||document.hidden||portraitScreen.matches)return;state.time+=dt;if(state.phase!=='over'){for(const broken of state.broken)broken.age+=dt;state.broken=state.broken.filter(b=>b.age<1.5);}if(state.phase==='over'){updateLossMusic(dt);return;}if(state.phase==='birthday'){if(!muted&&audioContext?.state!=='running')return;musicWait-=dt;if(musicWait<=0){const [note,beats]=melody[musicIndex];tone(note,beats*.38);musicWait=beats*.42;musicIndex++;if(musicIndex===melody.length){musicIndex=0;musicWait+=2;}}return;}if(state.phase!=='playing')return;
 const speed=1+state.score*.008,travel=(state.mode==='A'?CONFIG.travelA:CONFIG.travelB)/speed;
-state.spawn-=dt;if(state.spawn<=0){state.fruits.push({lane:Math.floor(Math.random()*4),progress:0});state.spawn=(state.mode==='A'?CONFIG.spawnA:CONFIG.spawnB)/speed;}
-for(const fruit of [...state.fruits]){fruit.progress+=dt/travel;if(fruit.progress>=1){state.fruits=state.fruits.filter(f=>f!==fruit);resolveFruit(fruit);if(state.phase!=='playing')break;}}
+state.spawn-=dt;if(state.spawn<=0){const lane=Math.floor(Math.random()*4);state.fruits.push({lane,progress:0});gameEffect('step',lane);state.spawn=(state.mode==='A'?CONFIG.spawnA:CONFIG.spawnB)/speed;}
+for(const fruit of [...state.fruits]){const oldStep=fruitStep(fruit);fruit.progress+=dt/travel;if(fruitStep(fruit)!==oldStep)gameEffect('step',fruit.lane);if(fruit.progress>=1){state.fruits=state.fruits.filter(f=>f!==fruit);resolveFruit(fruit);if(state.phase!=='playing')break;}}
 }
 startButton.addEventListener('click',()=>start(state.mode));pauseButton.addEventListener('click',pause);document.getElementById('case-pause').addEventListener('click',()=>{
   if(portraitScreen.matches)return;
