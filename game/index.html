@@ -1,22 +1,25 @@
 <!doctype html>
 <html lang="ru">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Морской бой</title><link rel="stylesheet" href="style.css"></head>
-<body>
-<main class="cabinet">
-  <header><span class="serial">ИГРОВОЙ АВТОМАТ / 01</span><button id="sound" aria-pressed="true">ЗВУК ВКЛ</button></header>
-  <div class="title"><span class="star">★</span><h1>МОРСКОЙ БОЙ</h1><p>ТОРПЕДНАЯ АТАКА</p></div>
-  <section class="viewport" aria-label="Море через перископ">
-    <canvas id="sea" width="1000" height="560" aria-label="Игровое поле. Наведение стрелками влево и вправо, выстрел пробелом."></canvas>
-    <div id="overlay"><span class="eyebrow">ЗАНЯТЬ БОЕВОЙ ПОСТ</span><h2 id="headline">Цель на горизонте</h2><p id="intro">Возьмите упреждение.<br>Торпеде нужно время, чтобы дойти до цели.</p><button id="start">НАЧАТЬ ИГРУ <span>→</span></button></div>
-    <span class="scope-label">ПЕРИСКОП · 01</span>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Old Arcade — игровые автоматы</title>
+  <style>
+    :root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif;background:#111917;color:#dedbbd}*{box-sizing:border-box}body{margin:0;min-height:100vh;padding:clamp(24px,7vw,90px);background:radial-gradient(ellipse at top,#293e32,#111917 75%)}main{max-width:1000px;margin:auto}.eyebrow{font-size:11px;letter-spacing:3px;color:#96a78e}h1{font-size:clamp(36px,7vw,70px);letter-spacing:4px;margin:22px 0 12px}header p{color:#a5b39c;line-height:1.7}.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:50px}.game{max-width:480px;display:block;text-decoration:none;color:inherit;border:1px solid #50604b;background:#1d2e25;transition:transform .15s,border-color .15s}.game:hover{transform:translateY(-4px);border-color:#c8ceaa}.game:focus-visible{outline:2px solid #e4d495;outline-offset:6px}.art{height:200px;display:grid;place-items:center;background:repeating-linear-gradient(0deg,transparent 0 5px,#b5cea409 5px 6px),radial-gradient(ellipse at top,#72957a,#102e26);position:relative;overflow:hidden}.scope{width:110px;height:110px;border:1px solid #d0d9ad88;border-radius:50%;display:grid;place-items:center;color:#cbd6a5;font-size:60px;font-weight:100}.art:before,.art:after{content:'';position:absolute;bottom:0;width:100px;height:110px;background:#16392b;clip-path:polygon(0 0,35% 45%,55% 35%,100% 100%,0 100%)}.art:before{left:0}.art:after{right:0;transform:scaleX(-1)}.details{padding:25px}.number{font-size:10px;letter-spacing:2px;color:#91a588}h2{font-size:28px;margin:12px 0}.details p{font-size:14px;line-height:1.7;color:#a6b89d;margin-bottom:26px}.play{font-size:11px;letter-spacing:2px;color:#e0dbb0}footer{margin-top:45px;color:#7c927d;font-size:11px;letter-spacing:1px}
+  </style>
+</head>
+<body><main>
+  <header><span class="eyebrow">КОЛЛЕКЦИЯ ИГРОВЫХ АВТОМАТОВ</span><h1>OLD ARCADE</h1><p>Знакомые игры. Ещё одна попытка.</p></header>
+  <section class="games" aria-label="Выбор игры">
+    <a class="game" href="games/sea-battle/index.html">
+      <div class="art" aria-hidden="true"><span class="scope">+</span></div>
+      <div class="details"><span class="number">01 / ТОРПЕДНАЯ АТАКА</span><h2>Морской бой</h2><p>Цель на горизонте. Возьмите упреждение<br>и отправьте корабль на дно.</p><span class="play">ИГРАТЬ →</span></div>
+    </a>
+    <a class="game" href="games/catch-watermelon/index.html">
+      <div style="height:200px;background:url('games/catch-watermelon/assets/gamefield.png') center/cover" aria-hidden="true"></div>
+      <div class="details"><span class="number">02 / ЭЛЕКТРОНИКА</span><h2>Лови арбузы!</h2><p>Четыре дорожки, корзина и ловкость рук.<br>На 68 очках вас ждёт праздничный сюрприз.</p><span class="play">ИГРАТЬ →</span></div>
+    </a>
   </section>
-  <section class="dashboard">
-    <div class="meter"><span>ПОПАДАНИЯ</span><strong id="score">00</strong></div>
-    <div class="ammo"><span>ТОРПЕДЫ</span><div id="rounds"></div><small id="status" role="status">ОЖИДАНИЕ КОМАНДЫ</small></div>
-    <button id="fire" disabled>ПУСК<span>ТОРПЕДЫ</span></button>
-  </section>
-  <footer><span>← → <span class="muted">НАВЕДЕНИЕ</span> <span class="separator">/</span> ПРОБЕЛ <span class="muted">ПУСК</span></span><span class="muted">10 ТОРПЕД · ОДНА ЗАДАЧА</span></footer>
-  <div class="mobile-controls"><button id="left" aria-label="Навести влево">←</button><span>ИЛИ ВЕДИТЕ ПАЛЬЦЕМ ПО МОРЮ</span><button id="right" aria-label="Навести вправо">→</button></div>
-</main>
-<script src="render.js"></script><script src="game.js"></script>
-</body></html>
+  <footer>БЕЗ МОНЕТ. ПРОСТО ИГРАЙТЕ.</footer>
+</main></body>
+</html>
