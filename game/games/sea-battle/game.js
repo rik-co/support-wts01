@@ -4,22 +4,65 @@ const state = { phase:'ready', ammo:CONFIG.shots, score:0, aim:500, ship:{x:80, 
 const ui = Object.fromEntries(['sea','overlay','headline','intro','start','score','rounds','status','fire','sound'].map(id=>[id,document.getElementById(id)]));
 const keys = new Set();
 let audioContext, master, soundEnabled=true;
-function unlockAudio(){
-  if(!soundEnabled)return;
-  const Audio=window.AudioContext || window.webkitAudioContext;
-  if(!Audio)return;
-  audioContext ||= new Audio();
-  if(!master){master=audioContext.createGain();master.gain.value=.65;master.connect(audioContext.destination);}
-  audioContext.resume().catch(()=>{});
+function syncAudioButton(){
+  const running=audioContext?.state==='running';
+  ui.sound.textContent=!(soundEnabled)?'Звук: выкл':running?'Звук: вкл':'Включить звук';
+  ui.sound.setAttribute('aria-pressed',String((soundEnabled)&&running));
 }
+function unlockAudio(recreate=false){
+  if(!(soundEnabled)||document.hidden)return Promise.resolve(false);
+  try{
+    // Request media playback routing where supported by Safari.
+    try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch{}
+    if(recreate&&audioContext){
+      master?.disconnect();
+      audioContext.close().catch(()=>{});
+      audioContext=null;master=null;
+    }
+    if(!audioContext||audioContext.state==='closed'){
+      const Audio=window.AudioContext||window.webkitAudioContext;
+      if(!Audio)throw new Error('Web Audio is unavailable');
+      audioContext=new Audio();
+      master=audioContext.createGain();
+      master.gain.value=.65;
+      master.connect(audioContext.destination);
+      audioContext.addEventListener('statechange',syncAudioButton);
+    }
+    const current=audioContext;
+    // Start an actual source synchronously inside the tap, before awaiting resume.
+    const prime=current.createBufferSource();
+    prime.buffer=current.createBuffer(1,1,current.sampleRate);
+    prime.connect(master);
+    prime.onended=()=>prime.disconnect();
+    prime.start();
+    return current.resume().then(()=>{
+      if(current!==audioContext)return false;
+      ui.sound.title='';
+      syncAudioButton();
+      return current.state==='running';
+    }).catch(error=>{
+      ui.sound.title=error.message;
+      syncAudioButton();
+      return false;
+    });
+  }catch(error){
+    ui.sound.title=error.message;
+    syncAudioButton();
+    return Promise.resolve(false);
+  }
+}
+// A fresh touch can restore an interrupted context after returning to Safari.
+document.addEventListener('touchend',()=>{
+  if(audioContext&&audioContext.state!=='running'&&(soundEnabled))unlockAudio();
+},{passive:true});
 function sound(frequency,duration,type='sine'){
   if(!soundEnabled)return;
-  unlockAudio();if(!audioContext)return;
+  if(document.hidden||audioContext?.state!=='running')return;
   const o=audioContext.createOscillator(),g=audioContext.createGain();o.type=type;o.frequency.setValueAtTime(frequency,audioContext.currentTime);o.frequency.exponentialRampToValueAtTime(40,audioContext.currentTime+duration);g.gain.setValueAtTime(.3,audioContext.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+duration);o.connect(g).connect(master);o.start();o.stop(audioContext.currentTime+duration);
 }
 function noise(duration,volume,cutoff){
   if(!soundEnabled)return;
-  unlockAudio();if(!audioContext)return;
+  if(document.hidden||audioContext?.state!=='running')return;
   const buffer=audioContext.createBuffer(1,Math.ceil(audioContext.sampleRate*duration),audioContext.sampleRate);
   const data=buffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;
   const source=audioContext.createBufferSource(),filter=audioContext.createBiquadFilter(),gain=audioContext.createGain();
@@ -35,8 +78,8 @@ function sync(message){
   ui.fire.disabled=state.phase!=='playing'||!!state.torpedo||state.cooldown>0||state.ammo===0;
   if(message)ui.status.textContent=message;
 }
-function start(){unlockAudio();sound(440,.18);Object.assign(state,{phase:'playing',ammo:CONFIG.shots,score:0,aim:500,ship:{x:80,direction:1,sinking:null},torpedo:null,burst:null,cooldown:0});ui.overlay.hidden=true;sync('ВЫБЕРИТЕ МОМЕНТ ДЛЯ АТАКИ');ui.fire.focus();}
-function fire(){if(ui.fire.disabled)return;state.ammo--;state.torpedo={x:state.aim,elapsed:0};sound(240,.35,'sawtooth');noise(CONFIG.travel,.35,1600);sync('ТОРПЕДА НА ХОДУ');}
+function start(){unlockAudio().then(ready=>{if(ready)sound(440,.18);});Object.assign(state,{phase:'playing',ammo:CONFIG.shots,score:0,aim:500,ship:{x:80,direction:1,sinking:null},torpedo:null,burst:null,cooldown:0});ui.overlay.hidden=true;sync('ВЫБЕРИТЕ МОМЕНТ ДЛЯ АТАКИ');ui.fire.focus();}
+function fire(){if(ui.fire.disabled)return;if(soundEnabled&&audioContext?.state!=='running')unlockAudio();state.ammo--;state.torpedo={x:state.aim,elapsed:0};sound(240,.35,'sawtooth');noise(CONFIG.travel,.35,1600);sync('ТОРПЕДА НА ХОДУ');}
 function finish(){state.phase='finished';ui.headline.textContent=`Попаданий: ${state.score} из ${CONFIG.shots}`;ui.intro.textContent=state.score>=7?'Отличная стрельба, командир.': 'Берите упреждение — цель движется, пока идёт торпеда.';ui.start.innerHTML='ЕЩЁ ОДНА ПАРТИЯ <span>→</span>';ui.overlay.hidden=false;sync('БОЕКОМПЛЕКТ ИЗРАСХОДОВАН');}
 function update(dt){
  state.time+=dt;if(state.phase!=='playing')return;
@@ -48,7 +91,15 @@ function update(dt){
  if(state.torpedo){state.torpedo.elapsed+=dt;if(state.torpedo.elapsed>=CONFIG.travel){const hit=state.ship.sinking===null && state.ship.x>155 && state.ship.x<790 && Math.abs(state.torpedo.x-state.ship.x)<=CONFIG.shipWidth/2;state.burst={x:state.torpedo.x,age:0,hit};if(hit){state.score++;state.ship.sinking=0;sound(100,1.3,'sawtooth');noise(1.8,.9,850);}else sound(80,.2);state.torpedo=null;state.cooldown=hit?CONFIG.sinkTime+.3:1.05;sync(hit?'ПОПАДАНИЕ · ЦЕЛЬ ТОНЕТ':'МИМО · ВОЗЬМИТЕ УПРЕЖДЕНИЕ');}}
 }
 ui.start.addEventListener('click',start);ui.fire.addEventListener('click',fire);
-ui.sound.addEventListener('click',()=>{soundEnabled=!soundEnabled;ui.sound.textContent=soundEnabled?'ЗВУК ВКЛ':'ЗВУК ВЫКЛ';ui.sound.setAttribute('aria-pressed',soundEnabled);if(master)master.gain.setValueAtTime(soundEnabled?.65:0,audioContext.currentTime);if(soundEnabled)sound(300,.15);});
+ui.sound.addEventListener('click',()=>{
+  if(soundEnabled&&audioContext?.state==='running'){
+    soundEnabled=false;master.gain.value=0;syncAudioButton();
+  }else{
+    soundEnabled=true;
+    unlockAudio(true).then(ready=>{if(ready)sound(440,.2);});
+  }
+});
+syncAudioButton();
 window.addEventListener('keydown',e=>{if(['ArrowLeft','ArrowRight','Space'].includes(e.code)){if(e.target.tagName==='BUTTON'&&e.code==='Space')return;e.preventDefault();keys.add(e.code);if(e.code==='Space'&&!e.repeat)fire();}});
 window.addEventListener('keyup',e=>keys.delete(e.code));window.addEventListener('blur',()=>keys.clear());document.addEventListener('visibilitychange',()=>keys.clear());
 function aim(e){const r=ui.sea.getBoundingClientRect();state.aim=Math.max(100,Math.min(900,(e.clientX-r.left)/r.width*1000));}
