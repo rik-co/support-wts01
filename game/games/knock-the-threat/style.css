@@ -1,0 +1,37 @@
+:root{color-scheme:dark;font-family:Arial,Helvetica,sans-serif;color:#f5efd9;background:#10121c}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 30%,#292042,transparent 65%),#10121c}main{max-width:1180px;margin:auto;padding:24px 32px}nav{display:flex;justify-content:space-between;align-items:center;font-size:10px;letter-spacing:2px;color:#a6a4b8}a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;cursor:pointer;border:1px solid #ffffff30;background:#ffffff09;padding:10px 16px;border-radius:6px}button:disabled{opacity:.4;cursor:default}button:focus-visible,a:focus-visible{outline:3px solid #f6c664;outline-offset:3px}header{display:flex;align-items:center;justify-content:space-between;margin:34px 0 24px}.eyebrow{color:#d5ac68;font-size:10px;letter-spacing:3px}h1{font-size:clamp(28px,4vw,51px);letter-spacing:-2px;margin:10px 0}h1 em{color:#f2bf64;font-style:normal}.intro{color:#aba7b7;font-size:13px;line-height:1.8}.machine{border:1px solid #a58b5c;border-radius:16px;overflow:hidden;box-shadow:0 20px 80px #0008}.hud{display:flex;align-items:center;gap:48px;padding:17px 30px;background:#191b28;border-bottom:2px solid #b68c49}.hud div{display:grid;gap:5px;min-width:70px}.hud span{font-size:9px;letter-spacing:2px;color:#a8a5b6}.hud strong{font:700 28px monospace;color:#ffd28a}.hud button{margin-left:auto;font-size:12px}.scene{position:relative;aspect-ratio:1448/1086;isolation:isolate;overflow:hidden;background:#111}.board{width:100%;height:100%;display:block}.hole{position:absolute;width:13%;height:20%;padding:0;border:0;background:none;transform:translate(-50%,-83%);border-radius:0;touch-action:manipulation}.hole .clip{display:block;position:absolute;inset:0;overflow:hidden;clip-path:inset(0 0 0 round 0 0 45% 45% / 0 0 10% 10%)}.sprite{position:absolute;inset:0;width:100%;height:100%;display:block;transform:translateY(105%);transition:transform .16s ease-out;pointer-events:none}.hole.up .sprite{transform:translateY(0)}.hole.hit .sprite{transform:translateY(105%) scale(.8)}.hole kbd{position:absolute;bottom:0;left:50%;transform:translate(-50%,70%);background:#10131ad9;border:1px solid #d1b58788;color:#f8d88e;border-radius:50%;width:22px;height:22px;display:grid;place-items:center;font:11px monospace}.hole:focus-visible{outline:none}.hole:focus-visible kbd{outline:3px solid white}.overlay{position:absolute;inset:0;z-index:30;display:grid;place-items:center;background:#090d1a60;backdrop-filter:blur(3px)}.overlay[hidden]{display:none}.panel{max-width:430px;margin:20px;padding:32px;text-align:center;border:1px solid #d7b77588;background:linear-gradient(145deg,#222436f5,#10131bf5);border-radius:14px;box-shadow:0 20px 70px #0009}h2{font-size:30px;margin:16px 0}.panel p{font-size:14px;line-height:1.8;color:#c1bdcb}.panel .eyebrow{font-size:10px;color:#f2bf64}.primary{background:#f2bf64;color:#251d11;font-size:13px;font-weight:800;letter-spacing:1px;padding:17px 30px;margin:12px 0;border:none;box-shadow:0 4px 0 #986631}.panel .small{font-size:11px}.bottom{display:flex;justify-content:space-between;gap:15px;background:#191b28;padding:17px 24px;font-size:11px;color:#c9beac}.bottom>span+span{font-size:9px;letter-spacing:1px;color:#8d889c}footer{display:flex;justify-content:space-between;font-size:11px;color:#8f899d;margin-top:15px;gap:15px}footer b{color:#d5c4a0}#impact,#impact{font-size:clamp(20px,4vw,45px);font-weight:900;color:#ffda79;text-shadow:0 3px 0 #653520;transform:translate(-50%,-100%)}#impact.show{animation:pop .45s ease-out}@keyframes pop{0%{opacity:1;translate:0 0}100%{opacity:0;translate:0 -35px}}@keyframes whack{0%{opacity:1;rotate:35deg}60%{opacity:1;rotate:-20deg}100%{opacity:0;rotate:0deg}}@media(max-width:650px){main{padding:16px 10px}nav{font-size:8px;letter-spacing:1px}header{margin:24px 6px 16px}.intro{display:none}h1{letter-spacing:-1px}.hud{gap:14px;padding:12px}.hud div{min-width:42px}.hud strong{font-size:22px}.hud span{font-size:8px;letter-spacing:1px}.hud button{padding:8px;font-size:10px}.scene{aspect-ratio:1/1.08}.board{position:absolute;height:100%;width:144%;max-width:none;left:-22%;object-fit:fill}#holes{position:absolute;inset:0 -22%}.hole kbd{width:17px;height:17px;font-size:9px}.panel{padding:20px;margin:14px}h2{font-size:25px}.bottom{padding:12px;font-size:10px}.bottom>span+span{display:none}footer{display:block;font-size:10px}}
+/* Reserve headroom for the back row and keep hit areas near their own holes. */
+.scene{aspect-ratio:1448/1260;background:radial-gradient(ellipse at 50% 0,#323454,#151626 65%)}
+.board{position:absolute;top:13.8%;height:86.2%;width:100%}
+#holes{position:absolute;inset:13.8% 0 0}
+.hole{height:6%;transform:translate(-50%,-50%)}
+.hole .clip{inset:auto 0 0;height:330%;pointer-events:none}
+.hole.up .clip{pointer-events:auto}
+@media(max-width:650px){.scene{aspect-ratio:1/1.22}.board{width:144%;left:-22%;height:86.2%}#holes{inset:13.8% -22% 0}}
+
+/* The board and articulated actor share a stable 1000 x 800 stage. */
+.scene{aspect-ratio:5/4;background:radial-gradient(ellipse at 35% 38%,#3d3555 0,#171827 65%)}
+.scene:before{content:"";position:absolute;left:0;right:0;bottom:0;height:24%;background:linear-gradient(transparent,#090b16)}
+.board{left:3%;top:31.25%;width:66%;height:61.875%;border-radius:45% 45% 12% 12%;box-shadow:0 25px 35px #0005}
+/* Keep row ordering inside the board layer, below the complete actor. */
+#holes{inset:31.25% 31% 6.875% 3%;z-index:1}
+#actor{position:absolute;inset:0;width:100%;height:100%;z-index:24;pointer-events:none;overflow:visible}
+
+.hole{width:15%;min-height:28px}
+#impact{z-index:26}
+.hole.reserved .sprite{transition:none}
+@media(max-width:650px){.scene{aspect-ratio:5/4}.board{left:3%;top:31.25%;width:66%;height:61.875%}#holes{inset:31.25% 31% 6.875% 3%}.hole kbd{width:15px;height:15px;font-size:8px}.panel{padding:14px}.panel h2{margin:8px 0;font-size:23px}.panel p{margin:6px 0;font-size:12px}.primary{padding:12px 20px;margin:8px 0}.panel .small{font-size:10px}}
+/* Keep the complete cabinet visible on typical laptop displays. */
+main{max-width:1050px;padding-top:16px}
+header{margin:20px 0 14px}
+.machine{width:min(100%,calc((100svh - 290px)*1.25));min-width:min(100%,540px);margin-inline:auto}
+.hud{gap:clamp(12px,3vw,40px);padding:12px 18px}
+.hud div{min-width:48px}
+.hud strong{font-size:24px}
+.bottom>span+span{display:none}
+@media(max-width:650px){.machine{width:100%;min-width:0}.hud{gap:12px;padding:10px}.hud strong{font-size:21px}.hud div{min-width:40px}}
+.hole{min-height:0}
+.hole:after{content:"";position:absolute;inset:-6px 0;z-index:-1}
+/* Flat celestial scenery stays behind every interactive stage element. */
+.scene{background:#24262b url("assets/sky.svg") center / 100% 100% no-repeat}
+.scene:before{display:none}
+.board{border-radius:0;box-shadow:none}

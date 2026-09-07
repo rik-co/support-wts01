@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Спаси Землю — Old Arcade</title><link rel="stylesheet" href="style.css?v=target-layers-1"></head>
+<body><main><nav><a href="../../index.html">← ВСЕ ИГРЫ</a><span>OLD ARCADE / 03</span><button id="sound" aria-pressed="false">Звук: вкл.</button></nav>
+<header><div><p class="eyebrow">СЕМЬ ЛУНОК. ОДИН МОЛОТОК.</p><h1>СПАСИ <em>ЗЕМЛЮ</em></h1></div><p class="intro">На краю земли неспокойно.<br>Пора взять дело в свои руки.</p></header>
+<section class="machine" aria-label="Игровой автомат"><div class="hud"><div><span>СЧЁТ</span><strong id="score">0000</strong></div><div><span>СЕРИЯ</span><strong id="combo">×1</strong></div><div><span>ВРЕМЯ</span><strong id="time">60</strong></div><div><span>РЕКОРД</span><strong id="best">0000</strong></div><button id="pause" disabled>Пауза</button></div>
+<div class="scene"><img class="board" src="assets/board-neutral.png" alt="Игровое поле с семью отверстиями на Земле, стоящей на слонах и черепахе"><div id="holes"></div><svg id="actor" viewBox="0 0 1000 800" role="img" aria-label="Персонаж замахивается и бьёт молотком двумя руками">
+<defs>
+<clipPath id="ready-cut"><path clip-rule="evenodd" d="M440 39L548 79L537 106L492 94L491 170L510 182L515 223L559 268L589 291L604 320L600 340L576 348L540 343L520 325L529 432L550 513L543 544L543 600L552 689L568 774L582 865L581 909L589 946L581 973L551 982L516 977L514 953L521 924L514 885L494 819L474 756L454 703L439 640L416 601L380 615L354 668L335 728L322 800L318 882L325 918L328 947L313 958L225 971L191 962L191 951L213 932L249 908L257 880L263 833L260 778L263 721L278 661L298 599L314 553L306 535L317 496L309 449L299 405L285 378L269 356L257 320L256 293L269 266L290 246L305 239L302 225L286 214L284 196L281 183L281 163L285 146L285 122L287 106L302 88L340 80L368 85L391 100L400 124L402 166L399 191L418 199L451 201L464 181L476 175L480 88L429 74Z M405 125L474 102L471 169L451 195L419 194L405 184Z"/></clipPath>
+<clipPath id="hit-cut"><path d="M1136 104L1151 84L1184 73L1216 74L1241 86L1254 105L1257 151L1251 185L1283 195L1321 196L1341 216L1350 248L1357 310L1351 358L1353 421L1362 481L1365 517L1357 539L1365 608L1367 691L1383 780L1399 881L1399 913L1406 949L1401 975L1365 983L1333 978L1332 951L1340 919L1321 864L1299 810L1278 754L1264 696L1244 646L1222 607L1199 612L1174 670L1158 726L1148 783L1140 847L1136 906L1145 935L1146 952L1116 965L1043 973L1006 965L1007 952L1028 934L1065 912L1074 880L1075 830L1073 775L1078 718L1090 662L1103 606L1124 552L1121 523L1141 475L1138 432L1133 353L1107 354L1095 376L1077 380L1054 374L1040 368L1021 378L1001 374L982 363L969 352L837 345L834 396L787 396L788 270L836 270L836 328L976 339L981 320L999 315L1018 318L1027 320L1065 301L1085 279L1098 257L1121 242L1151 229L1144 214L1138 198L1135 182L1131 167L1135 153L1132 140Z"/></clipPath>
+</defs>
+<ellipse id="actor-shadow" cx="770" cy="690" rx="95" ry="13" fill="#101114" opacity=".4"/>
+<g id="player">
+<g id="pose-ready" transform="translate(-200 0)"><image href="assets/player-poses.png" width="1536" height="1024" clip-path="url(#ready-cut)"/></g>
+<g id="pose-hit" transform="translate(-1000 0)" visibility="hidden"><image href="assets/player-poses.png" width="1536" height="1024" clip-path="url(#hit-cut)"/></g>
+</g>
+<g id="burst" opacity="0" stroke="#ffdf89" stroke-width="5" stroke-linecap="round"><path d="M-32 0H-50 M32 0H50 M-24 -24L-37 -37 M24 -24L37 -37 M0 -30V-45"/><ellipse rx="27" ry="9" fill="none"/></g>
+</svg>
+<div id="impact" aria-hidden="true"></div>
+
+<div class="overlay" id="overlay"><div class="panel"><p class="eyebrow" id="overline">ПРОВЕРКА РЕАКЦИИ</p><h2 id="title">Молоток наготове?</h2><p id="message">Лови мишени, пока они не спрятались.<br>60 секунд — сколько успеешь?</p><button class="primary" id="start">НАЧАТЬ ИГРУ ↗</button><p class="small">Нажимай на лунки или клавиши 1–7</p></div></div></div>
+<div class="bottom"><span id="status" role="status">Попадание +10 · каждые 5 подряд повышают множитель</span><span>МИМО — СЕРИЯ СБРАСЫВАЕТСЯ</span></div></section>
+<footer><p><b>Три мишени</b> · Вакцина · Мировой сговор · Вышка 5G</p><p>Шуточная аркада о страхах героя</p></footer></main><script src="game.js?v=whole-poses-1"></script></body></html>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800" fill="none">
+  <!-- Flat celestial scenery shares the cabinet image's neutral ground. -->
+  <path fill="#24262b" d="M0 0h1000v800H0z"/>
+  <path d="M-100 247Q470-190 1100 238M-80 220Q480-155 1080 212" stroke="#b89b65" stroke-opacity=".16"/>
+  <g transform="translate(155 120)">
+    <circle r="77" fill="#b89b65" fill-opacity=".08"/>
+    <g stroke="#d4a95f" stroke-width="5" stroke-linecap="round">
+      <path d="M0-67v-13M0 67v13M67 0h13M-67 0h-13M47-47l10-10M-47 47l-10 10M47 47l10 10M-47-47l-10-10"/>
+    </g>
+    <circle r="51" fill="#e9b95f"/>
+    <path d="M-36 20a42 42 0 0 0 72 0" stroke="#c98e44" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="-17" cy="-4" r="3" fill="#936d3b"/>
+    <circle cx="17" cy="-4" r="3" fill="#936d3b"/>
+  </g>
+  <g transform="translate(852 118)">
+    <circle r="76" fill="#a4b6ca" fill-opacity=".05"/>
+    <path d="M20-54A57 57 0 1 0 52 29 50 50 0 0 1 20-54Z" fill="#c5d1d8"/>
+    <circle cx="-29" cy="17" r="9" fill="#a4b7c5"/>
+    <circle cx="-24" cy="-17" r="5" fill="#a4b7c5"/>
+    <circle cx="-4" cy="40" r="4" fill="#a4b7c5"/>
+  </g>
+  <g fill="#d8bd83">
+    <path d="m331 78 3 10 10 3-10 3-3 10-3-10-10-3 10-3ZM617 166l3 9 9 3-9 3-3 9-3-9-9-3 9-3ZM936 350l3 10 10 3-10 3-3 10-3-10-10-3 10-3ZM80 224l2 7 7 2-7 2-2 7-2-7-7-2 7-2ZM907 623l3 10 10 3-10 3-3 10-3-10-10-3 10-3Z"/>
+  </g>
+  <g fill="#a4b7c5" opacity=".55">
+    <circle cx="55" cy="54" r="2"/><circle cx="270" cy="182" r="2.5"/>
+    <circle cx="427" cy="40" r="2"/><circle cx="527" cy="120" r="2"/>
+    <circle cx="701" cy="54" r="3"/><circle cx="739" cy="189" r="2"/>
+    <circle cx="950" cy="224" r="2"/><circle cx="927" cy="487" r="2"/>
+    <circle cx="762" cy="717" r="2.5"/><circle cx="955" cy="750" r="2"/>
+  </g>
+</svg>
