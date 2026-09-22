@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="104" viewBox="0 0 240 104">
+<rect x="2" y="2" width="236" height="100" rx="3" fill="#e5ebcc" stroke="#385b40" stroke-width="4"/>
+<rect x="9" y="9" width="222" height="86" rx="2" fill="none" stroke="#668461" stroke-width="2"/>
+<path d="M16 30h208M16 74h208M16 35h208M16 69h208" stroke="#91a47c"/>
+<ellipse cx="120" cy="52" rx="32" ry="39" fill="#afc19a" stroke="#496e4b" stroke-width="2"/>
+<path d="M99 77q1-15 15-18q-11-7-9-21q1-17 16-17q15 0 16 17q1 13-10 21q15 4 17 18" fill="#5f7b56"/>
+<path d="M110 34q10-10 20 0M112 45h5m7 0h5m-13 9q5 3 10-1" fill="none" stroke="#d8e1bb" stroke-width="2"/>
+<path d="M162 12v80" stroke="#6592a4" stroke-width="6" opacity=".7"/>
+<g fill="#244d35" font-family="Georgia,serif" font-weight="bold"><text x="17" y="29" font-size="23">100</text><text x="176" y="91" font-size="28">100</text><text x="20" y="86" font-size="22">$</text><text x="177" y="28" font-size="18">100</text></g>
+<g fill="#496e4b" font-family="Georgia,serif" text-anchor="middle" font-size="6"><text x="120" y="12">UNITED STATES OF AMERICA</text><text x="120" y="94">ONE HUNDRED DOLLARS</text></g>
+</svg>

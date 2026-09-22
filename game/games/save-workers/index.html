@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#191c1c">
+  <title>Спаси Жэ ихъ — Old Arcade</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <a class="back" href="../../index.html">← ВСЕ ИГРЫ</a>
+      <span class="edition">OLD ARCADE / 04</span>
+    </header>
+    <section id="side-menu" class="side-menu" aria-label="Выбор стороны">
+      <div class="side-art">
+        <img src="assets/choose-side.jpg" alt="Выбор стороны: герой с зеркалом слева, корабль над светлым городом справа">
+        <button id="choose-dark" class="side-choice dark-choice" disabled aria-label="Тёмная сторона — защищать работяг зеркалом"><span>Тёмная сторона</span></button>
+        <button id="choose-light" class="side-choice light-choice" disabled aria-label="Светлая сторона — управлять кораблём"><span>Светлая сторона</span></button>
+      </div>
+      <p id="menu-status" role="status">Загружаем игру…</p>
+    </section>
+    <section id="game-cabinet" class="cabinet" aria-labelledby="title" hidden>
+      <div class="masthead">
+        <div><p class="eyebrow">ПОСЛЕ СМЕНЫ</p><h1 id="title">Спаси Жэ ихъ</h1></div>
+        <div class="stage-label"><span class="light"></span><span id="side-label"></span><span class="sub">Радужная атака</span></div>
+      </div>
+      <div class="scene" id="scene" role="group" aria-label="Индустриальный город. Шесть работяг и ваш герой на улице.">
+        <img class="city" src="assets/city.jpg" alt="Заводской город на фоне багрового неба, дымящих труб и дворца металлургов" draggable="false">
+        <div class="scene-top"><span>ПРОМЫШЛЕННЫЙ РАЙОН</span><span>ВЕСЕЛЬЧАКИ <b id="happy-count">0 / 6</b></span></div>
+        <div class="ship" id="ship" aria-hidden="true"><img alt="" draggable="false"><span class="charge-orb" id="charge-orb"></span></div>
+        <div class="beam" id="beam" hidden aria-hidden="true"></div>
+        <svg class="reflection" id="reflection" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path id="mirror-link" d="" /></svg>
+        <div class="target-mark" id="target-mark" hidden aria-hidden="true"></div>
+        <div id="workers" aria-hidden="true"></div>
+        <div class="actor player" id="player" aria-hidden="true"><div class="shadow"></div><img alt="" draggable="false"></div>
+        <div id="banknotes" aria-hidden="true"></div>
+        <img class="finale-plane" id="finale-plane" hidden alt="Самолёт с плакатом: Добро пожаловать в светлое будущее" draggable="false">
+        <div class="unicorn" id="unicorn" hidden aria-hidden="true"><img alt="" draggable="false"></div>
+        <div class="scene-message" id="message" role="status">Загружаем город…</div>
+        <div class="scene-bottom"><span><span id="attack-status" role="status">КОРАБЛЬ НАД ГОРОДОМ</span></span></div>
+      </div>
+      <div class="dashboard">
+        <div class="control-group"><button class="arrow" id="left" aria-label="Шаг влево">←</button><button class="arrow" id="right" aria-label="Шаг вправо">→</button><button id="fire" hidden>🌈 Лазер</button></div>
+        <div class="actions"><button id="music-toggle" aria-label="Включить звук" aria-pressed="false">♫ Звук</button><button id="pause" disabled>Пауза</button><button id="reset" disabled aria-label="Начать заново">↻ Заново</button><button id="change-side">Сменить сторону</button></div>
+      </div>
+    </section>
+    <p id="instructions" class="chapter" hidden></p>
+  </main>
+  <audio id="music" src="assets/sad-song.mp3" loop preload="auto"></audio>
+  <script src="game.js"></script>
+</body>
+</html>
