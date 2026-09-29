@@ -1,22 +1,37 @@
 <!doctype html>
 <html lang="ru">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Морской бой</title><link rel="stylesheet" href="style.css"></head>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Морской бой</title><link rel="stylesheet" href="style.css?v=20260928-wide"></head>
 <body>
 <main class="cabinet">
   <header><a class="back" href="../../index.html">← ВСЕ ИГРЫ</a><button id="sound" aria-pressed="true">ЗВУК ВКЛ</button></header>
   <div class="title"><span class="star">★</span><h1>МОРСКОЙ БОЙ</h1><p>ТОРПЕДНАЯ АТАКА</p></div>
+  <div class="periscope">
+  <div class="eyecup">
   <section class="viewport" aria-label="Море через перископ">
     <canvas id="sea" width="1000" height="560" aria-label="Игровое поле. Наведение стрелками влево и вправо, выстрел пробелом."></canvas>
-    <div id="overlay"><span class="eyebrow">ЗАНЯТЬ БОЕВОЙ ПОСТ</span><h2 id="headline">Цель на горизонте</h2><p id="intro">Возьмите упреждение.<br>Торпеде нужно время, чтобы дойти до цели.</p><button id="start">НАЧАТЬ ИГРУ <span>→</span></button></div>
+    <div id="overlay"><span class="eyebrow">ЗАНЯТЬ БОЕВОЙ ПОСТ</span><h2 id="headline">Цель на горизонте</h2><p id="intro">Поворачивайте перископ — найдите цель.<br>Возьмите упреждение перед пуском.</p><button id="start">НАЧАТЬ ИГРУ <span>→</span></button></div>
     <span class="scope-label">ПЕРИСКОП · 01</span>
   </section>
+  </div>
+  <div class="grip-bar">
+    <button class="handle" id="left" aria-label="Повернуть перископ влево"><span>←</span></button>
+    <div class="scope-mount" aria-hidden="true"><span>ПЕРИСКОП · 01</span></div>
+    <button class="handle" id="right" aria-label="Повернуть перископ вправо"><span>→</span></button>
+  </div>
+  </div>
+  <p class="scope-help">УДЕРЖИВАЙТЕ РУЧКИ ИЛИ ← → · ТЯНИТЕ ВИД ДЛЯ ПОВОРОТА</p>
   <section class="dashboard">
     <div class="meter"><span>ПОПАДАНИЯ</span><strong id="score">00</strong></div>
     <div class="ammo"><span>ТОРПЕДЫ</span><div id="rounds"></div><small id="status" role="status">ОЖИДАНИЕ КОМАНДЫ</small></div>
     <button id="fire" disabled>ПУСК<span>ТОРПЕДЫ</span></button>
   </section>
-  <footer><span>← → <span class="muted">НАВЕДЕНИЕ</span> <span class="separator">/</span> ПРОБЕЛ <span class="muted">ПУСК</span></span><span class="muted">10 ТОРПЕД · ОДНА ЗАДАЧА</span></footer>
-  <div class="mobile-controls"><button id="left" aria-label="Навести влево">←</button><span>ИЛИ ВЕДИТЕ ПАЛЬЦЕМ ПО МОРЮ</span><button id="right" aria-label="Навести вправо">→</button></div>
+  <footer><span>← → <span class="muted">ПОВОРОТ</span> <span class="separator">/</span> ПРОБЕЛ <span class="muted">ПУСК</span></span><span class="muted">10 ТОРПЕД · ОДНА ЗАДАЧА</span></footer>
+  <section class="radar-panel" aria-label="Радар обнаружения кораблей">
+    <div class="radar-heading"><span>СОНАР / 01</span><strong>ОБЗОР ЦЕЛЕЙ</strong></div>
+    <canvas id="radar" width="280" height="280" aria-label="Круговой радар с отметкой корабля"></canvas>
+    <span class="radar-status">СКАНИРОВАНИЕ · <b id="radar-readout">ЦЕЛЬ В СЕКТОРЕ</b></span>
+  </section>
+
 </main>
-<script src="render.js"></script><script src="game.js?v=20260905-audio2"></script>
+<script src="render.js?v=20260929-wide-passage-clip"></script><script src="game.js?v=20260929-wide-passage-clip"></script>
 </body></html>
